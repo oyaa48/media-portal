@@ -9,9 +9,13 @@
   <h1>{{ library_name }}</h1>
 
   <ul>
-    {% for item in items %}
-    <li>{{ item.Name }}</li>
-    {% endfor %}
+  {% for item in items %}
+    <li>
+        <a href="/item/{{ item.Id }}/">
+            {{ item.Name }}
+        </a>
+    </li>
+  {% endfor %}
   </ul>
 </body>
 

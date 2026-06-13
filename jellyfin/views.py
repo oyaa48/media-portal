@@ -49,6 +49,8 @@ def library(request, library_id):
     data = response.json()
 
     library_name = request.GET.get("name", "Library")
+    if data["Items"]:
+        print(data["Items"][0])
 
     return render(
         request,
@@ -56,5 +58,32 @@ def library(request, library_id):
         {
             "library_name": library_name,
             "items": data["Items"],
+        },
+    )
+
+
+def item(request, item_id):
+    url = os.getenv("JELLYFIN_URL")
+    api_key = os.getenv("JELLYFIN_API_KEY")
+
+    if url is None:
+        raise ValueError("JELLYFIN_URL is not set")
+
+    if api_key is None:
+        raise ValueError("JELLYFIN_API_KEY is not set")
+
+    response = requests.get(
+        f"{url}/Items",
+        params={"Ids": item_id},
+        headers={"X-Emby-Token": api_key},
+    )
+
+    data = response.json()
+
+    return render(
+        request,
+        "jellyfin/item.html",
+        {
+            "item": data["Items"][0],
         },
     )
