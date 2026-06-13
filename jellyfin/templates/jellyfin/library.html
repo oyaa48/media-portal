@@ -3,20 +3,44 @@
 
 <head>
   <title>Library</title>
+  <style>
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 200px);
+      gap: 20px;
+    }
+
+    .poster {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .poster img {
+      width: 200px;
+    }
+
+    .poster p {
+      margin: 8px 0 0 0;
+    }
+  </style>
 </head>
 
 <body>
   <h1>{{ library_name }}</h1>
 
-  <ul>
+  <div class="grid">
   {% for item in items %}
-    <li>
-        <a href="/item/{{ item.Id }}/">
-            {{ item.Name }}
-        </a>
-    </li>
+    <a class="poster" href="/item/{{ item.Id }}/">
+
+      <img
+        src="{{ JELLYFIN_URL }}/Items/{{ item.Id }}/Images/Primary?api_key={{ api_key }}"
+        alt="{{ item.Name }}"
+      >
+
+      <p>{{ item.Name }}</p>
+    </a>
   {% endfor %}
-  </ul>
+  </div>
 </body>
 
 </html>

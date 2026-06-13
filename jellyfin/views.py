@@ -56,8 +56,10 @@ def library(request, library_id):
         request,
         "jellyfin/library.html",
         {
-            "library_name": library_name,
             "items": data["Items"],
+            "library_name": library_name,
+            "JELLYFIN_URL": url,
+            "api_key": api_key,
         },
     )
 
@@ -85,5 +87,7 @@ def item(request, item_id):
         "jellyfin/item.html",
         {
             "item": data["Items"][0],
+            "JELLYFIN_URL": url,
+            "api_key": api_key,
         },
     )
