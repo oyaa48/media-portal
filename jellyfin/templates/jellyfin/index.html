@@ -9,9 +9,13 @@
   <h1>Media Portal</h1>
 
   <ul>
-    {% for library in libraries %}
-    <li>{{ library.Name }}</li>
-    {% endfor %}
+  {% for library in libraries %}
+    <li>
+      <a href="/library/{{ library.Id }}/?name={{ library.Name }}">
+        {{ library.Name }}
+      </a>
+    </li>
+  {% endfor %}
   </ul>
 </body>
 

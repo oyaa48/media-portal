@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Library</title>
+</head>
+
+<body>
+  <h1>{{ library_name }}</h1>
+
+  <ul>
+    {% for item in items %}
+    <li>{{ item.Name }}</li>
+    {% endfor %}
+  </ul>
+</body>
+
+</html>
