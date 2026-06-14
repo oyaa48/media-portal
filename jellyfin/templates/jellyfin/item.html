@@ -11,6 +11,10 @@
 
 <h1>{{ item.Name }}</h1>
 
+<video controls width="800">
+  <source src="{{ JELLYFIN_URL }}/Videos/{{ item.Id }}/stream.mp4?Static=true&api_key={{ api_key }}">
+</video>
+
 <p>Year: {{ item.ProductionYear }}</p>
 
 <p>Type: {{ item.Type }}</p>

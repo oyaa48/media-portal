@@ -10,18 +10,21 @@ Work in progress. Core library browsing is functional.
 
 ## Current Features
 
-- Browse Jellyfin libraries
-- Browse media items
-- View metadata and artwork
-- Custom navigation interface
+* Browse Jellyfin libraries
+* Browse media items
+* View metadata and poster artwork
+* Stream media through an HTML5 video player
+* Dynamic navigation
+* Server-rendered pages using Django templates
+* Shared template layout with template inheritance
 
 ## Planned Features
 
-- Video playback
-- Recently added dashboard
-- Continue watching
-- Search
-
+* Recently added items in home page
+* Continue watching
+* Search
+* Subtitle selection
+* Improved item metadata and layouts
 
 ## License
 
