@@ -6,7 +6,9 @@ Media Portal uses Jellyfin as the backend for media management, metadata, and st
 
 ## Status
 
-Work in progress. Core library browsing is functional.
+Early development.
+
+Media Portal can currently browse Jellyfin libraries, display media metadata and artwork, and stream video through an HTML5 player. Core functionality is working, but the user interface and feature set are still under active development.
 
 ## Current Features
 
