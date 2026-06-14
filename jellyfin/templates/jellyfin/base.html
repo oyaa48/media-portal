@@ -1,34 +1,257 @@
 <!DOCTYPE html>
 <html>
-
 <head>
  <title>
   {% block title %}
   Media Portal
   {% endblock %}
-  </title> 
+  </title>
+  <style>
+    body {
+      margin: 0;
+      background: #e5e5e5;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #333;
+    }
+
+    .page {
+      width: 1100px;
+      margin: 15px auto;
+    }
+
+    /* Main top panel */
+
+    .top-panel {
+      background: #ffffff;
+      border: 1px solid #b7b7b7;
+    }
+
+    /* Header */
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      padding: 12px 16px;
+
+      background: linear-gradient(
+        to bottom,
+        #fafafa,
+        #ececec
+      );
+
+      border-bottom: 1px solid #c8c8c8;
+    }
+  
+    .logo {
+      font-size: 32px;
+      font-weight: bold;
+      color: #cc0000;
+    }
+
+    .logo span {
+      color: #444;
+    }
+
+    .header-links {
+      font-size: 12px;
+      display: flex;
+      gap: 20px;
+    }
+
+    .header-links a {
+      color: #0033cc;
+      text-decoration: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    .header-links a:hover {
+      text-decoration: underline;
+    }
+
+    /* Navigation tabs */
+
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        padding: 0 12px;
+
+        background: #f5f5f5;
+        border-bottom: 1px solid #c8c8c8;
+    }
+
+    .navbar nav {
+      display: flex;
+      gap: 4px;
+      align-items: flex-end;
+    }
+
+    .navbar a {
+      display: inline-block;
+
+      padding: 8px 18px;
+
+      color: #333;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: bold;
+
+      border: 1px solid #b7b7b7;
+      border-bottom: none;
+
+      background: linear-gradient(
+        to bottom,
+        #ffffff,
+        #dfe8f5
+      );
+
+      margin-top: 6px;
+
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+
+    .navbar a:hover {
+      background: linear-gradient(
+        to bottom,
+        #ffffff,
+        #eef4ff
+      );
+    }
+
+    /* Search row */
+
+    .search-bar {
+      padding: 0px;
+    }
+
+    .search-bar input {
+      width: 280px;
+
+      padding: 4px 6px;
+
+      border: 1px solid #999;
+    }
+
+    /* Content */
+
+    .content {
+      margin-top: 12px;
+
+      background: #ffffff;
+
+      border: 1px solid #b7b7b7;
+
+      padding: 20px;
+    }
+
+    /* Titles */
+
+    h1 {
+      margin-top: 0;
+      margin-bottom: 18px;
+
+      font-size: 32px;
+      font-weight: bold;
+
+      color: #111;
+    }
+
+    /* Video player */
+
+    video {
+      display: block;
+
+      width: 100%;
+      max-width: 900px;
+
+      background: #000;
+
+      margin-bottom: 15px;
+    }
+
+    /* Description section */
+
+    details {
+      margin-top: 10px;
+
+      border: 1px solid #c8c8c8;
+
+      background: #fafafa;
+    }
+
+    summary {
+      padding: 8px 10px;
+
+      cursor: pointer;
+
+      font-weight: bold;
+
+      background: linear-gradient(
+        to bottom,
+        #fdfdfd,
+        #ececec
+      );
+    }
+
+    details p {
+      padding: 10px;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    /* Links */
+
+    a {
+      color: #0033cc;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 
 <body>
-  <nav>
-    <a href="/">Home</a>
+  <div class="page">
 
-    <a href="/library/{{ movies_library.Id }}/?name=Movies">
-      Movies
-    </a>
+    <header class="header">
+      <div class="logo">
+        Media Portal
+      </div>
 
-    <a href="/library/{{ shows_library.Id }}/?name=Shows">
-      Shows
-    </a>
+      <div class="header-links">
+        <a href="#">Login</a>
+        <a href="#">Settings</a>
+      </div>
+    </header>
 
-    <a href="/library/{{ anime_library.Id }}/?name=Anime">
-      Anime
-    </a>
-  </nav>
+    <div class="navbar">
+        <nav>
+            <a href="/">Home</a>
 
-  {% block content %}
-  {% endblock %}
+            {% for library in navigation_libraries %}
+            <a href="/library/{{ library.Id }}/?name={{ library.Name }}">
+                {{ library.Name }}
+            </a>
+            {% endfor %}
+        </nav>
+
+        <div class="search-bar">
+            <input type="text" placeholder="Search movies, shows, anime...">
+        </div>
+    </div>
+
+    <main class="content">
+      {% block content %}
+      {% endblock %}
+    </main>
+
+  </div>
 
 </body>
-
 </html>

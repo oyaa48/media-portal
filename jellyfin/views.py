@@ -86,22 +86,7 @@ def get_libraries(url, api_key):
 
 
 def get_navigation_libraries(url, api_key):
-    libraries = get_libraries(url, api_key)
-
-    return {
-        "movies_library": next(
-            (lib for lib in libraries if lib["Name"] == "Movies"),
-            None,
-        ),
-        "shows_library": next(
-            (lib for lib in libraries if lib["Name"] == "Shows"),
-            None,
-        ),
-        "anime_library": next(
-            (lib for lib in libraries if lib["Name"] == "Anime"),
-            None,
-        ),
-    }
+    return {"navigation_libraries": get_libraries(url, api_key)}
 
 
 def item(request, item_id):
