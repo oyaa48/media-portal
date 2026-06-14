@@ -1,34 +1,18 @@
-<!DOCTYPE html>
-<html>
+{% extends "jellyfin/base.html" %}
 
-<head>
-  <title>{{ item.Name }}</title>
-</head>
+{% block title %}
+{{ item.Name }}
+{% endblock %}
 
-<body>
-  <nav>
-    <a href="/">Home</a>
+{% block content %}
 
-    <a href="/library/{{ movies_library.Id }}/?name=Movies">
-      Movies
-    </a>
+<img src="{{ JELLYFIN_URL }}/Items/{{ item.Id }}/Images/Primary?api_key={{ api_key }}" alt="{{ item.Name }}"
+  style="max-width: 200px;">
 
-    <a href="/library/{{ shows_library.Id }}/?name=Shows">
-      Shows
-    </a>
+<h1>{{ item.Name }}</h1>
 
-    <a href="/library/{{ anime_library.Id }}/?name=Anime">
-      Anime
-    </a>
-  </nav>
-  <img src="{{ JELLYFIN_URL }}/Items/{{ item.Id }}/Images/Primary?api_key={{ api_key }}" alt="{{ item.Name }}"
-    style="max-width: 200px;">
+<p>Year: {{ item.ProductionYear }}</p>
 
-  <h1>{{ item.Name }}</h1>
+<p>Type: {{ item.Type }}</p>
 
-  <p>Year: {{ item.ProductionYear }}</p>
-
-  <p>Type: {{ item.Type }}</p>
-</body>
-
-</html>
+{% endblock %}

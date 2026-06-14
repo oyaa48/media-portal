@@ -1,59 +1,43 @@
-<!DOCTYPE html>
-<html>
+{% extends "jellyfin/base.html" %}
 
-<head>
-  <title>Library</title>
-  <style>
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, 200px);
-      gap: 20px;
-    }
+{% block title %}
+{{ library_name }}
+{% endblock %}
 
-    .poster {
-      text-decoration: none;
-      color: inherit;
-    }
+{% block content %}
 
-    .poster img {
-      width: 200px;
-    }
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 200px);
+    gap: 20px;
+  }
 
-    .poster p {
-      margin: 8px 0 0 0;
-    }
-  </style>
-</head>
+  .poster {
+    text-decoration: none;
+    color: inherit;
+  }
 
-<body>
-  <nav>
-    <a href="/">Home</a>
+  .poster img {
+    width: 200px;
+  }
 
-    <a href="/library/{{ movies_library.Id }}/?name=Movies">
-      Movies
-    </a>
+  .poster p {
+    margin: 8px 0 0 0;
+  }
+</style>
 
-    <a href="/library/{{ shows_library.Id }}/?name=Shows">
-      Shows
-    </a>
+<h1>{{ library_name }}</h1>
 
-    <a href="/library/{{ anime_library.Id }}/?name=Anime">
-      Anime
-    </a>
-  </nav>
+<div class="grid">
+  {% for item in items %}
+  <a class="poster" href="/item/{{ item.Id }}/">
 
-  <h1>{{ library_name }}</h1>
+    <img src="{{ JELLYFIN_URL }}/Items/{{ item.Id }}/Images/Primary?api_key={{ api_key }}" alt="{{ item.Name }}">
 
-  <div class="grid">
-    {% for item in items %}
-    <a class="poster" href="/item/{{ item.Id }}/">
+    <p>{{ item.Name }}</p>
+  </a>
+  {% endfor %}
+</div>
 
-      <img src="{{ JELLYFIN_URL }}/Items/{{ item.Id }}/Images/Primary?api_key={{ api_key }}" alt="{{ item.Name }}">
-
-      <p>{{ item.Name }}</p>
-    </a>
-    {% endfor %}
-  </div>
-</body>
-
-</html>
+{% endblock %}

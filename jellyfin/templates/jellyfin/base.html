@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+ <title>
+  {% block title %}
+  Media Portal
+  {% endblock %}
+  </title> 
+</head>
+
+<body>
+  <nav>
+    <a href="/">Home</a>
+
+    <a href="/library/{{ movies_library.Id }}/?name=Movies">
+      Movies
+    </a>
+
+    <a href="/library/{{ shows_library.Id }}/?name=Shows">
+      Shows
+    </a>
+
+    <a href="/library/{{ anime_library.Id }}/?name=Anime">
+      Anime
+    </a>
+  </nav>
+
+  {% block content %}
+  {% endblock %}
+
+</body>
+
+</html>
