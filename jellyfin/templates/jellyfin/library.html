@@ -26,20 +26,33 @@
 </head>
 
 <body>
+  <nav>
+    <a href="/">Home</a>
+
+    <a href="/library/{{ movies_library.Id }}/?name=Movies">
+      Movies
+    </a>
+
+    <a href="/library/{{ shows_library.Id }}/?name=Shows">
+      Shows
+    </a>
+
+    <a href="/library/{{ anime_library.Id }}/?name=Anime">
+      Anime
+    </a>
+  </nav>
+
   <h1>{{ library_name }}</h1>
 
   <div class="grid">
-  {% for item in items %}
+    {% for item in items %}
     <a class="poster" href="/item/{{ item.Id }}/">
 
-      <img
-        src="{{ JELLYFIN_URL }}/Items/{{ item.Id }}/Images/Primary?api_key={{ api_key }}"
-        alt="{{ item.Name }}"
-      >
+      <img src="{{ JELLYFIN_URL }}/Items/{{ item.Id }}/Images/Primary?api_key={{ api_key }}" alt="{{ item.Name }}">
 
       <p>{{ item.Name }}</p>
     </a>
-  {% endfor %}
+    {% endfor %}
   </div>
 </body>
 

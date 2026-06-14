@@ -6,17 +6,23 @@
 </head>
 
 <body>
+  <nav>
+    <a href="/">Home</a>
+
+    <a href="/library/{{ movies_library.Id }}/?name=Movies">
+      Movies
+    </a>
+
+    <a href="/library/{{ shows_library.Id }}/?name=Shows">
+      Shows
+    </a>
+
+    <a href="/library/{{ anime_library.Id }}/?name=Anime">
+      Anime
+    </a>
+  </nav>
   <h1>Media Portal</h1>
 
-  <ul>
-  {% for library in libraries %}
-    <li>
-      <a href="/library/{{ library.Id }}/?name={{ library.Name }}">
-        {{ library.Name }}
-      </a>
-    </li>
-  {% endfor %}
-  </ul>
 </body>
 
 </html>
