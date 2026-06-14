@@ -4,22 +4,24 @@ A self-hosted media streaming portal built with Django and Jellyfin.
 
 Media Portal uses Jellyfin as the backend for media management, metadata, and streaming while providing a custom frontend focused on simplicity, accessibility, and server-rendered pages.
 
-## Goals
+## Status
 
-* Custom frontend independent of the default Jellyfin interface
-* Server-rendered HTML
-* Minimal JavaScript
-* Compatibility with older browsers
-* Self-hosted and open source
-* Powered by the Jellyfin API
+Work in progress. Core library browsing is functional.
 
-## Technology
+## Current Features
 
-* Django
-* Jellyfin
-* Python
-* Docker
-* Nginx
+- Browse Jellyfin libraries
+- Browse media items
+- View metadata and artwork
+- Custom navigation interface
+
+## Planned Features
+
+- Video playback
+- Recently added dashboard
+- Continue watching
+- Search
+
 
 ## License
 
