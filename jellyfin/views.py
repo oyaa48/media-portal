@@ -114,16 +114,18 @@ def item(request, item_id):
     if api_key is None:
         raise ValueError("JELLYFIN_API_KEY is not set")
 
+    user_id = get_user_id(url, api_key)
+
     response = requests.get(
-        f"{url}/Items",
-        params={"Ids": item_id},
+        f"{url}/Items/{item_id}",
+        params={"userId": user_id},
         headers={"X-Emby-Token": api_key},
     )
 
     data = response.json()
 
     context = {
-        "item": data["Items"][0],
+        "item": data,
         "JELLYFIN_URL": url,
         "api_key": api_key,
     }
@@ -135,3 +137,13 @@ def item(request, item_id):
         "jellyfin/item.html",
         context,
     )
+
+
+def get_user_id(url, api_key):
+    response = requests.get(
+        f"{url}/Users",
+        headers={"X-Emby-Token": api_key},
+    )
+
+    users = response.json()
+    return users[0]["Id"]
