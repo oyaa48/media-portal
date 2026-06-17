@@ -6,18 +6,111 @@
 
 {% block content %}
 
-<h1>{{ item.Name }}</h1>
+<style>
+.player-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
 
-<video controls width="800">
-  <source src="{{ JELLYFIN_URL }}/Videos/{{ item.Id }}/stream.mp4?Static=true&api_key={{ api_key }}">
-</video>
+.player-container h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: bold;
+    color: #111;
+    overflow-wrap: break-word;
+}
 
-<details>
-  <summary>Description</summary>
-  <p>{{ item.Overview }}</p>
-  <p>Year: {{ item.ProductionYear }}</p>
-  <p>Type: {{ item.Type }}</p>
+.player-container video {
+    display: block;
 
-</details>
+    width: 100%;
+    aspect-ratio: 16 / 9;
+
+    background: #000;
+
+    object-fit: contain;
+
+    margin-bottom: 15px;
+}
+
+.item-details {
+    margin-top: 10px;
+    border: 1px solid #c8c8c8;
+    background: #fafafa;
+}
+
+.item-details summary {
+    padding: 8px 10px;
+    cursor: pointer;
+    font-weight: bold;
+    background: linear-gradient(
+        to bottom,
+        #fdfdfd,
+        #ececec
+    );
+}
+
+.item-details-content {
+    padding: 12px;
+}
+
+.item-details-content p {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.metadata p {
+    margin: 4px 0;
+}
+
+.meta {
+    margin-top: 2px;
+    margin-bottom: 12px;
+
+    color: #777;
+    font-size: 14px;
+}
+
+</style>
+
+<div class="player-container">
+
+    <h1>{{ item.Name }}</h1>
+
+    <div class="meta">
+        {{ item.ProductionYear }}
+
+        {% if item.Genres %}
+            • {{ item.Genres|join:", " }}
+        {% endif %}
+    </div>
+
+    <video controls>
+        <source src="{{ JELLYFIN_URL }}/Videos/{{ item.Id }}/stream.mp4?Static=true&api_key={{ api_key }}">
+
+        {% for subtitle in subtitle_streams %}
+        <track
+            kind="subtitles"
+            src="/subtitle/{{ item.Id }}/{{ subtitle.Index }}/"
+            label="{{ subtitle.Label }}">
+        {% endfor %}
+    </video>
+
+    <details class="item-details">
+        <summary>Description</summary>
+
+        <div class="item-details-content">
+
+            {% if item.Overview %}
+            <p>{{ item.Overview }}</p>
+            {% else %}
+            <p>No description available.</p>
+            {% endif %}
+
+        </div>
+
+    </details>
+
+</div>
 
 {% endblock %}
