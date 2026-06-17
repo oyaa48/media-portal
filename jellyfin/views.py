@@ -32,6 +32,7 @@ def login_view(request):
         data = response.json()
 
         request.session["jellyfin_token"] = data["AccessToken"]
+        print("LOGIN TOKEN:", data["AccessToken"])
         request.session["user_id"] = data["User"]["Id"]
         request.session["username"] = data["User"]["Name"]
 
@@ -52,7 +53,7 @@ def report_progress(request):
     response = requests.post(
         f"{os.getenv('JELLYFIN_URL')}/Sessions/Playing/Progress",
         headers={
-            "X-Emby-Token": os.getenv("JELLYFIN_API_KEY"),
+            "X-Emby-Token": request.session["jellyfin_token"],
             "Content-Type": "application/json",
         },
         json={
@@ -78,7 +79,7 @@ def playback_started(request):
     response = requests.post(
         f"{os.getenv('JELLYFIN_URL')}/Sessions/Playing",
         headers={
-            "X-Emby-Token": os.getenv("JELLYFIN_API_KEY"),
+            "X-Emby-Token": request.session["jellyfin_token"],
             "Content-Type": "application/json",
         },
         json={
@@ -109,6 +110,10 @@ def index(request):
         headers={"X-Emby-Token": api_key},
         timeout=10,
     )
+
+    if response.status_code == 401:
+        request.session.flush()
+        return redirect("/login/")
 
     data = response.json()
 
@@ -159,6 +164,10 @@ def library(request, library_id):
         headers={"X-Emby-Token": api_key},
         timeout=10,
     )
+
+    if response.status_code == 401:
+        request.session.flush()
+        return redirect("/login/")
 
     data = response.json()
 
@@ -215,6 +224,10 @@ def item(request, item_id):
         params={"userId": user_id},
         headers={"X-Emby-Token": api_key},
     )
+
+    if response.status_code == 401:
+        request.session.flush()
+        return redirect("/login/")
 
     data = response.json()
 
@@ -371,7 +384,7 @@ def subtitle(request, item_id, stream_index):
     response = requests.get(
         f"{os.getenv('JELLYFIN_URL')}/Videos/{item_id}/{item_id}/Subtitles/{stream_index}/0/Stream.js",
         params={
-            "ApiKey": os.getenv("JELLYFIN_API_KEY"),
+            "ApiKey": request.session["jellyfin_token"],
         },
     )
     data = response.json()
