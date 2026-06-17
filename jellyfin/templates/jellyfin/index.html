@@ -1,5 +1,61 @@
 {% extends "jellyfin/base.html" %}
 
 {% block content %}
-<h1>Media Portal</h1>
+
+<style>
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 200px);
+    gap: 20px;
+}
+
+.poster {
+    text-decoration: none;
+    color: inherit;
+}
+
+.poster img {
+    width: 200px;
+    display: block;
+}
+
+.poster p {
+    margin: 8px 0 0 0;
+}
+
+.progress-bar {
+    width: 200px;
+    height: 4px;
+    background: #666;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #d00;
+}
+</style>
+
+{% if continue_watching %}
+<h2>Continue Watching</h2>
+
+<div class="grid">
+    {% for item in continue_watching %}
+    <a class="poster" href="/item/{{ item.Id }}/">
+
+        <img src="{{ JELLYFIN_URL }}/Items/{{ item.Id }}/Images/Primary?api_key={{ api_key }}"
+             alt="{{ item.Name }}">
+
+        <div class="progress-bar">
+            <div class="progress-fill"
+                 style="width: {{ item.UserData.PlayedPercentage }}%;">
+            </div>
+        </div>
+
+        <p>{{ item.Name }}</p>
+
+    </a>
+    {% endfor %}
+</div>
+{% endif %}
+
 {% endblock %}

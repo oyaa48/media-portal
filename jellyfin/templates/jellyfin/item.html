@@ -85,7 +85,7 @@
         {% endif %}
     </div>
 
-    <video controls>
+    <video id="player" controls>
         <source src="{{ JELLYFIN_URL }}/Videos/{{ item.Id }}/stream.mp4?Static=true&api_key={{ api_key }}">
 
         {% for subtitle in subtitle_streams %}
@@ -112,5 +112,58 @@
     </details>
 
 </div>
+
+<script>
+const video = document.getElementById("player");
+
+video.addEventListener("loadedmetadata", () => {
+    const ticks = {{ item.UserData.PlaybackPositionTicks|default:0 }};
+    if (ticks > 0) {
+        video.currentTime = ticks / 10000000;
+    }
+});
+
+let started = false;
+
+video.addEventListener("play", () => {
+    console.log("PLAY EVENT");
+
+    if (started) return;
+    started = true;
+
+    fetch("/playback-started/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            item_id: "{{ item.Id }}"
+        })
+    });
+});
+
+setInterval(() => {
+    console.log("sending progress");
+
+    fetch("/report-progress/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            item_id: "{{ item.Id }}",
+            position: video.currentTime,
+            duration: video.duration
+        })
+    })
+    .then(response => {
+        console.log("response", response.status);
+    })
+    .catch(error => {
+        console.error("fetch failed", error);
+    });
+
+}, 10000);
+</script>
 
 {% endblock %}
