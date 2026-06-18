@@ -190,7 +190,6 @@ def library(request, library_id):
 
 
 def get_libraries(url, api_key):
-
     response = requests.get(
         f"{url}/Library/MediaFolders",
         headers={
@@ -198,7 +197,13 @@ def get_libraries(url, api_key):
         },
     )
 
-    return response.json()["Items"]
+    libraries = response.json()["Items"]
+
+    return [
+        library
+        for library in libraries
+        if library["CollectionType"] != "playlists"
+    ]
 
 
 def get_navigation_libraries(url, api_key):
