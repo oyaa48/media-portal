@@ -123,6 +123,24 @@
       );
     }
 
+    .navbar a.active {
+        background: linear-gradient(
+            to bottom,
+            #fff9c9 0%,
+            #f9e27d 45%,
+            #e4bf42 100%
+        );
+
+        color: #765d00;
+
+        border: 1px solid #c9ad4a;
+        border-bottom: none;
+
+        box-shadow:
+            inset 0 1px 0 #ffffe8,
+            0 1px 1px rgba(0,0,0,0.15);
+    }
+
     /* Search row */
 
     .search-bar {
@@ -226,21 +244,29 @@
       </div>
     </header>
 
-    <div class="navbar">
-        <nav>
-            <a href="/">Home</a>
+<div class="navbar">
+    <nav>
+        <a
+            href="/"
+            class="{% if request.path == '/' %}active{% endif %}"
+        >
+            Home
+        </a>
 
-            {% for library in navigation_libraries %}
-            <a href="/library/{{ library.Id }}/?name={{ library.Name }}">
-                {{ library.Name }}
-            </a>
-            {% endfor %}
-        </nav>
+        {% for library in navigation_libraries %}
+        <a
+            href="/library/{{ library.Id }}/?name={{ library.Name }}"
+            class="{% if library.Id in request.path %}active{% endif %}"
+        >
+            {{ library.Name }}
+        </a>
+        {% endfor %}
+    </nav>
 
-        <div class="search-bar">
-            <input type="text" placeholder="Search movies, shows, anime...">
-        </div>
+    <div class="search-bar">
+        <input type="text" placeholder="Search movies, shows, anime...">
     </div>
+</div>
 
     <main class="content">
       {% block content %}
