@@ -1,4 +1,5 @@
 {% extends "jellyfin/base.html" %}
+{% load static %}
 
 {% block title %}
 {{ item.Name }}
@@ -86,14 +87,14 @@
     </div>
 
     <video id="player" controls>
-        <source src="{{ JELLYFIN_URL }}/Videos/{{ item.Id }}/stream.mp4?Static=true&api_key={{ api_key }}">
 
-        {% for subtitle in subtitle_streams %}
-        <track
-            kind="subtitles"
-            src="/subtitle/{{ item.Id }}/{{ subtitle.Index }}/"
-            label="{{ subtitle.Label }}">
-        {% endfor %}
+
+{#        {% for subtitle in subtitle_streams %}#}
+{#        <track#}
+{#            kind="subtitles"#}
+{#            src="/subtitle/{{ item.Id }}/{{ subtitle.Index }}/"#}
+{#            label="{{ subtitle.Label }}">#}
+{#        {% endfor %}#}
     </video>
 
     <details class="item-details">
@@ -113,8 +114,33 @@
 
 </div>
 
+<script src="{% static 'js/hls.min.js' %}"></script>
+
 <script>
 const video = document.getElementById("player");
+
+{% if use_hls %}
+
+if (Hls.isSupported()) {
+    const hls = new Hls();
+
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        console.log("HLS loaded");
+    });
+
+    hls.on(Hls.Events.ERROR, (event, data) => {
+        console.log("HLS error:", data);
+    });
+
+    hls.loadSource("{{ stream_url|safe }}");
+    hls.attachMedia(video);
+}
+
+{% else %}
+
+video.src = "{{ stream_url|safe }}";
+
+{% endif %}
 
 video.addEventListener("loadedmetadata", () => {
     const ticks = {{ item.UserData.PlaybackPositionTicks|default:0 }};
@@ -126,8 +152,6 @@ video.addEventListener("loadedmetadata", () => {
 let started = false;
 
 video.addEventListener("play", () => {
-    console.log("PLAY EVENT");
-
     if (started) return;
     started = true;
 
@@ -143,8 +167,6 @@ video.addEventListener("play", () => {
 });
 
 setInterval(() => {
-    console.log("sending progress");
-
     fetch("/report-progress/", {
         method: "POST",
         headers: {
@@ -155,14 +177,7 @@ setInterval(() => {
             position: video.currentTime,
             duration: video.duration
         })
-    })
-    .then(response => {
-        console.log("response", response.status);
-    })
-    .catch(error => {
-        console.error("fetch failed", error);
     });
-
 }, 10000);
 </script>
 

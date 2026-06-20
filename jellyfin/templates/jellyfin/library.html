@@ -31,12 +31,19 @@
 
 <div class="grid">
   {% for item in items %}
-  <a class="poster" href="/item/{{ item.Id }}/">
+  <a
+    class="poster"
+    href="{% if item.Type == 'Series' %}/seasons/{{ item.Id }}/{% else %}/item/{{ item.Id }}/{% endif %}"
+  >
 
-    <img src="{{ JELLYFIN_URL }}/Items/{{ item.Id }}/Images/Primary?api_key={{ api_key }}" alt="{{ item.Name }}">
+    <img
+        src="{{ JELLYFIN_URL }}/Items/{{ item.Id }}/Images/Primary?api_key={{ api_key }}"
+        alt="{{ item.Name }}"
+    >
 
     <p>{{ item.Name }}</p>
-  </a>
+
+</a>
   {% endfor %}
 </div>
 

@@ -148,6 +148,9 @@ def index(request):
 
 def library(request, library_id):
     url = os.getenv("JELLYFIN_URL")
+    if "jellyfin_token" not in request.session:
+        return redirect("/login/")
+
     api_key = request.session["jellyfin_token"]
 
     if url is None:
@@ -205,6 +208,35 @@ def get_libraries(url, api_key):
         if library["CollectionType"] != "playlists"
     ]
 
+def seasons(request, show_id):
+
+    if "jellyfin_token" not in request.session:
+        return redirect("/login/")
+
+    url = os.getenv("JELLYFIN_URL")
+    api_key = request.session["jellyfin_token"]
+
+    response = requests.get(
+        f"{url}/Items",
+        params={
+            "ParentId": show_id,
+        },
+        headers={
+            "X-Emby-Token": api_key,
+        },
+    )
+
+    data = response.json()
+
+    context = {
+        "seasons": data["Items"],
+    }
+
+    return render(
+        request,
+        "jellyfin/seasons.html",
+        context,
+    )
 
 def get_navigation_libraries(url, api_key):
     return {"navigation_libraries": get_libraries(url, api_key)}
@@ -236,12 +268,56 @@ def item(request, item_id):
 
     data = response.json()
 
+    import json
+
+    with open("playback.json") as f:
+        payload = json.load(f)
+
+    playback_info = requests.post(
+        f"{url}/Items/{item_id}/PlaybackInfo",
+        headers={
+            "X-Emby-Token": api_key,
+            "Content-Type": "application/json",
+        },
+        json=payload,
+    ).json()
+
+    print(json.dumps(playback_info, indent=2))
+
+    if not playback_info["MediaSources"]:
+        print(json.dumps(playback_info, indent=2))
+        return HttpResponse(
+            "<pre>" + json.dumps(playback_info, indent=2) + "</pre>"
+        )
+
+    media_source = playback_info["MediaSources"][0]
+
+    if "TranscodingUrl" in media_source:
+        stream_url = url + media_source["TranscodingUrl"]
+        use_hls = True
+        print("Using HLS")
+    else:
+        stream_url = (
+            f"{url}/Videos/{item_id}/stream"
+            f"?Static=true&api_key={api_key}"
+        )
+        use_hls = False
+        print("Using direct play")
+
+    print(media_source.keys())
+
+    hls_url = url + media_source["TranscodingUrl"]
+
+    print("HLS URL:")
+    print(media_source["TranscodingUrl"])
+    print(hls_url)
+
     subtitle_streams = [
         stream for stream in data["MediaStreams"]
         if stream["Type"] == "Subtitle"
     ]
 
-    LANGUAGES = {
+    languages = {
         "eng": "English",
         "en": "English",
 
@@ -355,7 +431,7 @@ def item(request, item_id):
     }
 
     for subtitle in subtitle_streams:
-        subtitle["Label"] = LANGUAGES.get(
+        subtitle["Label"] = languages.get(
             subtitle.get("Language", "").lower(),
             subtitle.get("DisplayTitle", "Subtitles"),
         )
@@ -365,6 +441,8 @@ def item(request, item_id):
         "JELLYFIN_URL": url,
         "api_key": api_key,
         "subtitle_streams": subtitle_streams,
+        "stream_url": stream_url,
+        "use_hls": use_hls,
     }
 
     context.update(get_navigation_libraries(url, api_key))
@@ -416,3 +494,4 @@ def get_continue_watching(url, api_key, user_id):
     return {
         "continue_watching": response.json()["Items"]
     }
+

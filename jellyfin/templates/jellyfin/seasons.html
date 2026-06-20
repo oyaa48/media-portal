@@ -1,0 +1,16 @@
+<h1>Seasons</h1>
+
+<div class="grid">
+  {% for season in seasons %}
+  <a class="poster" href="/episodes/{{ season.Id }}/">
+
+    <img
+      src="{{ JELLYFIN_URL }}/Items/{{ season.Id }}/Images/Primary?api_key={{ api_key }}"
+      alt="{{ season.Name }}"
+    >
+
+    <p>{{ season.Name }}</p>
+
+  </a>
+  {% endfor %}
+</div>
