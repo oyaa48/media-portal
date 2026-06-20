@@ -268,8 +268,6 @@ def item(request, item_id):
 
     data = response.json()
 
-    import json
-
     with open("playback.json") as f:
         payload = json.load(f)
 
@@ -285,32 +283,30 @@ def item(request, item_id):
     print(json.dumps(playback_info, indent=2))
 
     if not playback_info["MediaSources"]:
-        print(json.dumps(playback_info, indent=2))
-        return HttpResponse(
-            "<pre>" + json.dumps(playback_info, indent=2) + "</pre>"
-        )
-
-    media_source = playback_info["MediaSources"][0]
-
-    if "TranscodingUrl" in media_source:
-        stream_url = url + media_source["TranscodingUrl"]
-        use_hls = True
-        print("Using HLS")
-    else:
+        # Jellyfin couldn't determine a compatible stream.
+        # Fall back to the old direct stream.
         stream_url = (
             f"{url}/Videos/{item_id}/stream"
             f"?Static=true&api_key={api_key}"
         )
         use_hls = False
-        print("Using direct play")
 
-    print(media_source.keys())
+    else:
+        media_source = playback_info["MediaSources"][0]
 
-    hls_url = url + media_source["TranscodingUrl"]
+        if "TranscodingUrl" in media_source:
+            stream_url = url + media_source["TranscodingUrl"]
+            use_hls = True
+            print("Using HLS")
 
-    print("HLS URL:")
-    print(media_source["TranscodingUrl"])
-    print(hls_url)
+        else:
+            stream_url = (
+                f"{url}/Videos/{item_id}/stream"
+                f"?Static=true&api_key={api_key}"
+            )
+            use_hls = False
+            print("Using direct play")
+
 
     subtitle_streams = [
         stream for stream in data["MediaStreams"]
