@@ -2,13 +2,13 @@
 
 A self-hosted media streaming portal built with Django and Jellyfin.
 
-Media Portal uses Jellyfin as the backend for media management, metadata, user accounts, and streaming while providing a custom frontend focused on simplicity, customization, and server-rendered pages.
+Media Portal uses Jellyfin as the backend for media management, metadata, user accounts, playback sessions, and transcoding while providing a custom frontend focused on simplicity, customization, and server-rendered pages.
 
 ## Why This Project Exists
 
 Media Portal was created as an alternative to many modern web application design trends.
 
-Modern media frontends often rely heavily on client-side JavaScript, large frontend frameworks, and increasingly complex interfaces. While these approaches can be powerful, they can also introduce unnecessary complexity, higher resource usage, and reduced maintainability.
+Modern media frontends often rely heavily on large JavaScript frameworks, complex interfaces, and increasingly client-side architectures. While these approaches can be powerful, they can also introduce unnecessary complexity, increased resource usage, and reduced maintainability.
 
 Media Portal takes a different approach. It prioritizes server-rendered pages, straightforward navigation, and a user interface inspired by the clarity and information density of older websites while still providing modern functionality.
 
@@ -18,7 +18,7 @@ The goal is not nostalgia for its own sake. Media Portal is not trying to recrea
 
 Early development.
 
-Core media browsing and playback functionality is operational. Libraries can be browsed, media metadata can be viewed, and video playback works through an HTML5 player. The user interface and many planned features are still under active development.
+Core media browsing, authentication, playback, and progress synchronization are operational. Libraries can be browsed, metadata can be viewed, and playback supports both direct streaming and automatic transcoding through Jellyfin.
 
 ## Current Features
 
@@ -26,7 +26,14 @@ Core media browsing and playback functionality is operational. Libraries can be 
 * Browse media items
 * View media metadata
 * Display poster artwork
-* Stream media through an HTML5 video player
+* Continue Watching section
+* Jellyfin user authentication
+* Per-user sessions and access tokens
+* Resume playback support
+* Playback progress synchronization
+* Hybrid playback system
+    * Direct streaming when possible
+    * Automatic HLS transcoding when required
 * Dynamic navigation generated from Jellyfin libraries
 * Server-rendered pages using Django templates
 * Shared template layout through template inheritance
@@ -35,37 +42,40 @@ Core media browsing and playback functionality is operational. Libraries can be 
 
 ### Near Term
 
-* Home page redesign
-* Recently added media
-* Continue watching
+* Home page improvements
 * Search
 * Series support
+    * Season and episode navigation
 * Subtitle selection
-* Improved metadata layouts
-* Enhanced navigation and UI
+* Metadata improvements
+* Navigation and UI improvements
 
 ### Medium Term
 
-* User authentication
-* Portal settings page
-* Global default settings
-* Per-user preferences
-* Theme support
-* Customizable navigation
+* Settings system
+    * Global default settings
+    * Per-user preferences
 
+* Theme support
+
+* Customizable interface
+    * Customizable navigation
+    * User-specific layouts
+    * 
 ### Long Term
 
 * SyncPlay / watch parties
-* Shared viewing sessions between Jellyfin users
-* Synchronized play, pause, and seeking
-* Real-time playback synchronization
+    * Shared viewing sessions between Jellyfin users
+    * Synchronized play, pause, and seeking
+    * Real-time playback synchronization
 
 ## Tech Stack
 
-* Django
 * Python
+* Django
 * Jellyfin API
 * HTML5 video
+* HLS.js
 
 ## License
 
