@@ -268,7 +268,7 @@ def item(request, item_id):
 
     data = response.json()
 
-    with open("playback.json") as f:
+    with open("playback_profile.json") as f:
         payload = json.load(f)
 
     playback_info = requests.post(

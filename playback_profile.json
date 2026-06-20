@@ -1,11 +1,7 @@
 {
-    "UserId": "REMOVED_USER_ID",
     "StartTimeTicks": 0,
     "IsPlayback": true,
     "AutoOpenLiveStream": true,
-    "AudioStreamIndex": "1",
-    "SubtitleStreamIndex": "2",
-    "MediaSourceId": "REMOVED_MEDIA_SOURCE_ID",
     "MaxStreamingBitrate": 225847138,
     "AlwaysBurnInSubtitleWhenTranscoding": false,
     "DeviceProfile": {
