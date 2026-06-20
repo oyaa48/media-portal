@@ -61,7 +61,7 @@ Core media browsing, authentication, playback, and progress synchronization are 
 * Customizable interface
     * Customizable navigation
     * User-specific layouts
-    * 
+  
 ### Long Term
 
 * SyncPlay / watch parties
