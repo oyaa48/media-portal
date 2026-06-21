@@ -89,12 +89,12 @@
     <video id="player" controls>
 
 
-{#        {% for subtitle in subtitle_streams %}#}
-{#        <track#}
-{#            kind="subtitles"#}
-{#            src="/subtitle/{{ item.Id }}/{{ subtitle.Index }}/"#}
-{#            label="{{ subtitle.Label }}">#}
-{#        {% endfor %}#}
+        {% for subtitle in subtitle_streams %}
+        <track
+            kind="subtitles"
+            src="/subtitle/{{ item.Id }}/{{ subtitle.Index }}/"
+            label="{{ subtitle.Label }}">
+        {% endfor %}
     </video>
 
     <details class="item-details">

@@ -271,6 +271,8 @@ def item(request, item_id):
     with open("playback_profile.json") as f:
         payload = json.load(f)
 
+    payload["SubtitleStreamIndex"] = -1
+
     playback_info = requests.post(
         f"{url}/Items/{item_id}/PlaybackInfo",
         headers={
@@ -294,6 +296,22 @@ def item(request, item_id):
     else:
         media_source = playback_info["MediaSources"][0]
 
+        print("DefaultSubtitleStreamIndex:",
+              media_source.get("DefaultSubtitleStreamIndex"))
+
+        print("TranscodingUrl:")
+        print(media_source.get("TranscodingUrl"))
+
+        for stream in media_source["MediaStreams"]:
+            if stream["Type"] == "Subtitle":
+                print(
+                    stream["Index"],
+                    stream["Codec"],
+                    stream.get("Language"),
+                    stream.get("DeliveryMethod"),
+                    stream.get("DeliveryUrl")
+                )
+
         if "TranscodingUrl" in media_source:
             stream_url = url + media_source["TranscodingUrl"]
             use_hls = True
@@ -307,10 +325,11 @@ def item(request, item_id):
             use_hls = False
             print("Using direct play")
 
-
     subtitle_streams = [
-        stream for stream in data["MediaStreams"]
+        stream
+        for stream in data["MediaStreams"]
         if stream["Type"] == "Subtitle"
+           and stream["IsTextSubtitleStream"]
     ]
 
     languages = {

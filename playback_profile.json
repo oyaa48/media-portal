@@ -338,6 +338,14 @@
             {
                 "Format": "ssa",
                 "Method": "External"
+            },
+            {
+                "Format": "srt",
+                "Method": "External"
+            },
+            {
+                "Format": "subrip",
+                "Method": "External"
             }
         ],
         "ResponseProfiles": [
