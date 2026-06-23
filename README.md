@@ -22,21 +22,12 @@ Core media browsing, authentication, playback, and progress synchronization are 
 
 ## Current Features
 
-* Browse Jellyfin libraries
-* Browse media items
-* View media metadata
-* Display poster artwork
-* Continue Watching section
 * Jellyfin user authentication
 * Per-user sessions and access tokens
-* Resume playback support
-* Playback progress synchronization
-* Hybrid playback system
-    * Direct streaming when possible
-    * Automatic HLS transcoding when required
+* Playback progress synchronization and resume playback
+* Automatic HLS transcoding when required
 * Dynamic navigation generated from Jellyfin libraries
 * Server-rendered pages using Django templates
-* Shared template layout through template inheritance
 
 ## Roadmap
 
@@ -44,23 +35,14 @@ Core media browsing, authentication, playback, and progress synchronization are 
 
 * Home page improvements
 * Search
-* Series support
-    * Season and episode navigation
-* Subtitle selection
 * Metadata improvements
 * Navigation and UI improvements
 
 ### Medium Term
 
-* Settings system
-    * Global default settings
-    * Per-user preferences
-
+* User settings system
 * Theme support
-
 * Customizable interface
-    * Customizable navigation
-    * User-specific layouts
   
 ### Long Term
 
