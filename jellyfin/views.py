@@ -228,9 +228,15 @@ def seasons(request, show_id):
 
     data = response.json()
 
+    print(data["Items"][0]["ImageTags"])
+
     context = {
         "seasons": data["Items"],
+        "JELLYFIN_URL": url,
+        "api_key": api_key,
     }
+
+    context.update(get_navigation_libraries(url, api_key))
 
     return render(
         request,
@@ -241,6 +247,40 @@ def seasons(request, show_id):
 def get_navigation_libraries(url, api_key):
     return {"navigation_libraries": get_libraries(url, api_key)}
 
+def episodes(request, season_id):
+
+    if "jellyfin_token" not in request.session:
+        return redirect("/login/")
+
+    url = os.getenv("JELLYFIN_URL")
+    api_key = request.session["jellyfin_token"]
+
+    response = requests.get(
+        f"{url}/Items",
+        params={
+            "ParentId": season_id,
+            "Fields": "Overview",
+        },
+        headers={
+            "X-Emby-Token": api_key,
+        },
+    )
+
+    data = response.json()
+
+    context = {
+        "episodes": data["Items"],
+        "JELLYFIN_URL": url,
+        "api_key": api_key,
+    }
+
+    context.update(get_navigation_libraries(url, api_key))
+
+    return render(
+        request,
+        "jellyfin/episodes.html",
+        context,
+    )
 
 def item(request, item_id):
     url = os.getenv("JELLYFIN_URL")
@@ -347,6 +387,10 @@ def item(request, item_id):
         "ger": "German",
         "de": "German",
 
+        "spa": "Spanish",
+        "es": "Spanish",
+        "esp": "Spanish",
+
         "fra": "French",
         "fre": "French",
         "fr": "French",
@@ -446,10 +490,21 @@ def item(request, item_id):
     }
 
     for subtitle in subtitle_streams:
-        subtitle["Label"] = languages.get(
-            subtitle.get("Language", "").lower(),
-            subtitle.get("DisplayTitle", "Subtitles"),
-        )
+
+        language = subtitle.get("Language")
+
+        if language:
+            subtitle["Label"] = languages.get(
+                language.lower(),
+                subtitle.get("DisplayTitle", "Subtitles"),
+            )
+        else:
+            display_title = subtitle.get("DisplayTitle", "Subtitles")
+
+            if "Spanish" in display_title:
+                subtitle["Label"] = "Spanish"
+            else:
+                subtitle["Label"] = display_title
 
     context = {
         "item": data,

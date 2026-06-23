@@ -1,0 +1,77 @@
+{% extends "jellyfin/base.html" %}
+
+{% block title %}
+Episodes
+{% endblock %}
+
+{% block content %}
+
+<style>
+  .episode-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .episode-card {
+    display: flex;
+    gap: 20px;
+    text-decoration: none;
+    color: inherit;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .episode-card img {
+    width: 250px;
+    height: auto;
+  }
+
+  .episode-info {
+    flex: 1;
+  }
+
+  .episode-info h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 24px;
+    color: #222;
+  }
+
+  .episode-info p {
+    margin: 0;
+    color: #666;
+    line-height: 1.5;
+  }
+</style>
+
+<h1>Episodes</h1>
+
+<div class="episode-list">
+
+  {% for episode in episodes %}
+  <a class="episode-card" href="/item/{{ episode.Id }}/">
+
+    <img
+      src="{{ JELLYFIN_URL }}/Items/{{ episode.Id }}/Images/Primary?api_key={{ api_key }}"
+      alt="{{ episode.Name }}"
+    >
+
+    <div class="episode-info">
+
+      <h2>
+        {{ episode.IndexNumber }} {{ episode.Name }}
+      </h2>
+
+      <p>
+        {{ episode.Overview }}
+      </p>
+
+    </div>
+
+  </a>
+  {% endfor %}
+
+</div>
+
+{% endblock %}

@@ -10,4 +10,5 @@ urlpatterns = [
     path("report-progress/", views.report_progress, name="report_progress"),
     path("playback-started/", views.playback_started, name="playback_started"),
     path("login/", views.login_view, name="login"),
+    path("episodes/<str:season_id>/", views.episodes, name="episodes"),
 ]

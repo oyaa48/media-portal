@@ -76,6 +76,18 @@
 
 <div class="player-container">
 
+    {% if item.Type == "Episode" %}
+
+    <h1>
+        E{{ item.IndexNumber }} {{ item.Name }}
+    </h1>
+
+    <div class="meta">
+        {{ item.SeriesName }} ({{ item.ProductionYear }})
+    </div>
+
+    {% else %}
+
     <h1>{{ item.Name }}</h1>
 
     <div class="meta">
@@ -85,6 +97,8 @@
             • {{ item.Genres|join:", " }}
         {% endif %}
     </div>
+
+    {% endif %}
 
     <video id="player" controls>
 
