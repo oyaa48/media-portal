@@ -72,6 +72,44 @@
     font-size: 14px;
 }
 
+.episode-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px 0;
+    gap: 20px;
+}
+
+.episode-navigation a {
+    flex: 1;
+
+    padding: 10px 15px;
+
+    text-decoration: none;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+
+    color: #333;
+
+    border: 1px solid #b7b7b7;
+
+    background: linear-gradient(
+        to bottom,
+        #ffffff,
+        #e6e6e6
+    );
+
+    border-radius: 4px;
+}
+
+.episode-navigation a:hover {
+    background: linear-gradient(
+        to bottom,
+        #ffffff,
+        #eef4ff
+    );
+}
+
 </style>
 
 <div class="player-container">
@@ -110,6 +148,28 @@
             label="{{ subtitle.Label }}">
         {% endfor %}
     </video>
+
+    {% if item.Type == "Episode" %}
+    <div class="episode-navigation">
+
+        {% if previous_episode_id %}
+        <a href="/item/{{ previous_episode_id }}/">
+            ← Previous Episode
+        </a>
+        {% else %}
+        <div></div>
+        {% endif %}
+
+        {% if next_episode_id %}
+        <a href="/item/{{ next_episode_id }}/">
+            Next Episode →
+        </a>
+        {% else %}
+        <div></div>
+        {% endif %}
+
+    </div>
+    {% endif %}
 
     <details class="item-details">
         <summary>Description</summary>

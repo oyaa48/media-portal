@@ -6,10 +6,13 @@ from django.shortcuts import render, redirect
 import json
 import os
 import requests
+import uuid
 
 load_dotenv()
 
 def login_view(request):
+    if "device_id" not in request.session:
+        request.session["device_id"] = str(uuid.uuid4())
 
     if request.method == "POST":
 
@@ -19,7 +22,7 @@ def login_view(request):
                 "Authorization": (
                     'MediaBrowser Client="Media Portal", '
                     'Device="Browser", '
-                    'DeviceId="media-portal", '
+                    f'DeviceId="{request.session["device_id"]}", '
                     'Version="1.0"'
                 )
             },
@@ -283,11 +286,10 @@ def episodes(request, season_id):
     )
 
 def item(request, item_id):
-    url = os.getenv("JELLYFIN_URL")
-    api_key = request.session["jellyfin_token"]
-
     if "jellyfin_token" not in request.session:
         return redirect("/login/")
+    url = os.getenv("JELLYFIN_URL")
+    api_key = request.session["jellyfin_token"]
 
     if url is None:
         raise ValueError("JELLYFIN_URL is not set")
@@ -307,6 +309,100 @@ def item(request, item_id):
         return redirect("/login/")
 
     data = response.json()
+
+    previous_episode_id = None
+    next_episode_id = None
+
+    if data["Type"] == "Episode":
+
+        season_response = requests.get(
+            f"{url}/Shows/{data['SeriesId']}/Episodes",
+            params={
+                "Season": data["ParentIndexNumber"],
+                "userId": user_id,
+            },
+            headers={
+                "X-Emby-Token": api_key,
+            },
+        )
+
+        episodes = season_response.json()["Items"]
+
+        current_index = next(
+            i
+            for i, episode in enumerate(episodes)
+            if episode["Id"] == item_id
+        )
+
+        # Previous episode
+        if current_index > 0:
+            previous_episode_id = episodes[current_index - 1]["Id"]
+
+        else:
+            seasons_response = requests.get(
+                f"{url}/Shows/{data['SeriesId']}/Seasons",
+                params={"userId": user_id},
+                headers={"X-Emby-Token": api_key},
+            )
+
+            seasons = seasons_response.json()["Items"]
+
+            current_season_index = next(
+                i
+                for i, season in enumerate(seasons)
+                if season["Id"] == data["SeasonId"]
+            )
+
+            if current_season_index > 0:
+                previous_season = seasons[current_season_index - 1]
+
+                previous_episodes_response = requests.get(
+                    f"{url}/Shows/{data['SeriesId']}/Episodes",
+                    params={
+                        "Season": previous_season["IndexNumber"],
+                        "userId": user_id,
+                    },
+                    headers={"X-Emby-Token": api_key},
+                )
+
+                previous_episodes = previous_episodes_response.json()["Items"]
+
+                previous_episode_id = previous_episodes[-1]["Id"]
+
+        # Next episode
+        if current_index < len(episodes) - 1:
+            next_episode_id = episodes[current_index + 1]["Id"]
+
+        else:
+            seasons_response = requests.get(
+                f"{url}/Shows/{data['SeriesId']}/Seasons",
+                params={"userId": user_id},
+                headers={"X-Emby-Token": api_key},
+            )
+
+            seasons = seasons_response.json()["Items"]
+
+            current_season_index = next(
+                i
+                for i, season in enumerate(seasons)
+                if season["Id"] == data["SeasonId"]
+            )
+
+            if current_season_index < len(seasons) - 1:
+                next_season = seasons[current_season_index + 1]
+
+                next_episodes_response = requests.get(
+                    f"{url}/Shows/{data['SeriesId']}/Episodes",
+                    params={
+                        "Season": next_season["IndexNumber"],
+                        "userId": user_id,
+                    },
+                    headers={"X-Emby-Token": api_key},
+                )
+
+                next_episodes = next_episodes_response.json()["Items"]
+
+                next_episode_id = next_episodes[0]["Id"]
 
     with open("playback_profile.json") as f:
         payload = json.load(f)
@@ -387,9 +483,6 @@ def item(request, item_id):
         "ger": "German",
         "de": "German",
 
-        "spa": "Spanish",
-        "es": "Spanish",
-        "esp": "Spanish",
 
         "fra": "French",
         "fre": "French",
@@ -513,6 +606,8 @@ def item(request, item_id):
         "subtitle_streams": subtitle_streams,
         "stream_url": stream_url,
         "use_hls": use_hls,
+        "previous_episode_id": previous_episode_id,
+        "next_episode_id": next_episode_id,
     }
 
     context.update(get_navigation_libraries(url, api_key))
